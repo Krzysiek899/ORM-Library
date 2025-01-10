@@ -1,11 +1,10 @@
-namespace QueryBuilders
-{
+namespace QueryBuilders{
     public class CreateQuerryBuilder : ICreateBuilder
     {
         private string _createQuerry = "";
-        public ICreateBuilder BuildCreate(string table_name)
+        public ICreateBuilder BuildCreate(string tableName)
         {
-            _createQuerry += "CREATE TABLE " + table_name + "(\n";
+            _createQuerry += "CREATE TABLE " + tableName + "(\n";
             return this;
         }
 

@@ -1,17 +1,18 @@
 using System;
 using System.Data;
 using System.Data.Common;
-public abstract class DataBaseContext
+public abstract class DatabaseContext
 {
     private DatabaseConnection _databaseConnection;
     private ModelBuilder _modelBuilder;
     private DatabaseMapper _databaseMapper;
 
-    public DataBaseContext (string connectionString, IDbConnectionFactory factory){
+    public DatabaseContext (string connectionString, IDbConnectionFactory factory)
+    {
 
         _databaseConnection = new DatabaseConnection(connectionString, factory);
         _modelBuilder = new ModelBuilder();
-        _databaseMapper = new DatabaseMapper(_databaseConnection, _modelBuilder);
+        _databaseMapper = new DatabaseMapper(this);
 
     }
 
@@ -23,14 +24,9 @@ public abstract class DataBaseContext
 
     protected abstract void OnModelCreating(ModelBuilder modelBuilder);
 
-    public bool Map(){
-        
-        _databaseMapper.MapToDatabase();
-
-
-
-
-        return true;
+    private DataBaseMapping Map()
+    {
+        throw new NotImplementedException();
     }
 
 

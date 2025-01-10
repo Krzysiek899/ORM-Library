@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-public class Product : Entity
+[Table("Products")]
+public class Product
 {
     [Key]
     public int Product_id {get; set;}
@@ -9,5 +10,6 @@ public class Product : Entity
     public string Name { get; set; }
     public decimal Price { get; set; }
     public string Category {get; set;}
+    
 
 }

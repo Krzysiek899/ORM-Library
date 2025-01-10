@@ -1,4 +1,4 @@
-public enum ColumnType{
+public enum PropertyType{
     INT,
     SMALLINT,
     BIGINT,

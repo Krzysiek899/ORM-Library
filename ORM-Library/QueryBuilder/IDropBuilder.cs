@@ -1,5 +1,8 @@
-public interface IDropBuilder 
+namespace QueryBuilders
 {
-    IDropBuilder BuildDropTable(string tableName);
-    IDropBuilder BuildDropDatabase(string databaseName);
+    public interface IDropBuilder 
+    {
+        IDropBuilder BuildDropTable(string tableName);
+        IDropBuilder BuildDropDatabase(string databaseName);
+    }
 }

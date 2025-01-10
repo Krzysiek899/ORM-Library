@@ -2,8 +2,23 @@ using System;
 
 namespace Logging
 {
-    public class ConsoleLogger : ILogger
+    public sealed class Logger
     {
+
+        private Logger(){}
+
+        private static Logger _instance;
+
+        public static Logger GetInstance()
+        {
+            if(_instance == null)
+            {
+                _instance = new Logger();
+            }
+            return _instance;
+        }
+
+
         public void LogInfo(string message)
         {
             Console.WriteLine($"INFO: {message}");
@@ -20,7 +35,3 @@ namespace Logging
         }
     }
 }
-
-
-
-// nie jestem pewny czy to jest singleton
