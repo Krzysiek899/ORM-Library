@@ -1,5 +1,8 @@
-public interface IInsertBuilder
+namespace QueryBuilders
 {
-    public IInsertBuilder BuildInsertInto(string table, string? columns);   
-    public IInsertBuilder BuildValues(List<string> values);
+    public interface IInsertBuilder
+    {
+        public IInsertBuilder BuildInsertInto(string table, string? columns);   
+        public IInsertBuilder BuildValues(List<string> values);
+    }
 }

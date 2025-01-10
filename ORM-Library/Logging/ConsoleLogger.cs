@@ -20,3 +20,7 @@ namespace Logging
         }
     }
 }
+
+
+
+// nie jestem pewny czy to jest singleton

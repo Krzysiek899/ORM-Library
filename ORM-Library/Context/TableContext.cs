@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
+using QueryBuilders;
 
 public class Table<T> where T : class
 {
@@ -23,8 +25,8 @@ public class Table<T> where T : class
 
         PropertyInfo[] properties = typeof(Y).GetProperties();
 
-        var insertQuerryBuilder = new InsertQuerryBuilder();
-        string querry, columns = "", values = "", table = typeof(Y).Name;
+        var insertQueryBuilder = new InsertQuerryBuilder();
+        string query, columns = "", values = "", table = typeof(Y).Name;
 
         foreach(PropertyInfo property in properties)
         {
@@ -36,12 +38,10 @@ public class Table<T> where T : class
         values = values.TrimEnd(',', ' ');
         List<string> valuesList = values.Split(new[] {", "}, StringSplitOptions.None).ToList(); //przeksztalca string values na liste
 
-
-
-        insertQuerryBuilder.BuildInsertInto(table, columns).BuildValues(valuesList);
-        querry = insertQuerryBuilder.GetQuery();
-        var querryExecutor = _databaseConnection.CreateQueryExecutor();
-        querryExecutor.ExecuteQuery(querry);
+        insertQueryBuilder.BuildInsertInto(table, columns).BuildValues(valuesList);
+        query = insertQueryBuilder.GetQuery();
+        var queryExecutor = _databaseConnection.CreateQueryExecutor();
+        queryExecutor.ExecuteQuery(query);
         
         return true;
     }
@@ -55,8 +55,8 @@ public class Table<T> where T : class
 
         PropertyInfo[] properties = typeof(Y).GetProperties();
 
-        var deleteQuerryBuilder = new DeleteQuerryBuilder();
-        string querry, columns = "", values = "", table = typeof(Y).Name;
+        var deleteQueryBuilder = new DeleteQuerryBuilder();
+        string query, columns = "", values = "", table = typeof(Y).Name;
 
         foreach(PropertyInfo property in properties)
         {
@@ -80,15 +80,65 @@ public class Table<T> where T : class
             condition += columnsList[i] + " = " + valuesList[i] + " AND ";
         }
 
-        deleteQuerryBuilder.BuildDeleteFrom(table).BuildWhere(condition);
-        querry = deleteQuerryBuilder.GetQuery();
-        var querryExecutor = _databaseConnection.CreateQueryExecutor();
-        querryExecutor.ExecuteQuery(querry);
+        deleteQueryBuilder.BuildDeleteFrom(table).BuildWhere(condition);
+        query = deleteQueryBuilder.GetQuery();
+        var queryExecutor = _databaseConnection.CreateQueryExecutor();
+        queryExecutor.ExecuteQuery(query);
 
         return true;
     }
 
+    // public Table ToList()
+    // {   
+    //     var selectQuerryBuilder = new SelectQuerryBuilder();
+    //     selectQuerryBuilder.BuildSelect("*").BuildFrom(typeof(T).Name);
+    //     string query = selectQuerryBuilder.GetQuery();
+    //     var queryExecutor = _databaseConnection.CreateQueryExecutor();
+    //     DataTable result = queryExecutor.ExecuteQuery(query);
+        
+        
 
-    
+    //     return new NotImplementedException();
+    // }
+
+    // public object First<Y>(Y argument)
+    // {
+    //     var selectQuerryBuilder = new SelectQuerryBuilder();
+    //     selectQuerryBuilder.BuildSelect("*").BuildFrom(typeof(Y).Name);
+    //     string query = selectQuerryBuilder.GetQuery();
+    //     var queryExecutor = _databaseConnection.CreateQueryExecutor();
+    //     var result = queryExecutor.ExecuteQuery(query);
+        
+    //     if(result.Rows.Count > 0)
+    //     {
+    //         var entity = new Y();
+            
+    //     }
+
+
+
+    //     // if(typeof(T).Equals(typeof(Y)))
+    //     // {
+    //     //     return null;
+    //     // }
+    //     // return 
+    // }
+
+    public T First(EntityCollection dataTable)
+    {
+        EntityIterator iterator = new EntityIterator(dataTable, false);
+
+        if(iterator.MoveNext())
+        {
+            return (T)iterator.Current();
+        }
+        return null;
+    }
+
+    public bool Update<Y>(Y argument)
+    {
+
+        return true;
+    }
 
 }

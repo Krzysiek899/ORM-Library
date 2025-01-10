@@ -5,11 +5,13 @@ public abstract class DataBaseContext
 {
     private DatabaseConnection _databaseConnection;
     private ModelBuilder _modelBuilder;
+    private DatabaseMapper _databaseMapper;
 
     public DataBaseContext (string connectionString, IDbConnectionFactory factory){
 
         _databaseConnection = new DatabaseConnection(connectionString, factory);
         _modelBuilder = new ModelBuilder();
+        _databaseMapper = new DatabaseMapper(_databaseConnection, _modelBuilder);
 
     }
 
@@ -21,9 +23,10 @@ public abstract class DataBaseContext
 
     protected abstract void OnModelCreating(ModelBuilder modelBuilder);
 
-    public bool MapToDatabase(){
+    public bool Map(){
         
-        
+        _databaseMapper.MapToDatabase();
+
 
 
 

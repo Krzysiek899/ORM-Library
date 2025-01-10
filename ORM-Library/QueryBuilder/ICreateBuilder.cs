@@ -1,3 +1,5 @@
+namespace QueryBuilders
+{
 public interface ICreateBuilder
 {
     public ICreateBuilder BuildCreate(string table_name);
