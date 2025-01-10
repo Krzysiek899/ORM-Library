@@ -2,8 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using Logging;
-using QueryBuilders;
-
 
 namespace Mapping
 {
@@ -12,30 +10,13 @@ namespace Mapping
     public class DatabaseMapper{
 
         private readonly DatabaseContext _databaseContext;
-        private readonly  CreateQuerryBuilder _createQuerryBuilder;
 
         private readonly Logger logger = Logger.GetInstance();
 
         public DatabaseMapper( DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
-            _createQuerryBuilder = new CreateQuerryBuilder();
         }
-
-        // public bool MapToDatabase()
-        // {
-        //     var entityConfigurations = _modelBuilder.GetConfigurations();
-
-        //     foreach (var config in entityConfigurations)
-        //     {
-        //         string createTableQuery = _createQuerryBuilder.BuildCreate();
-        //         ExecuteQuery(createTableQuery);
-
-        //         MapRelations(config);
-        //     }
-
-        //     return true;
-        // }
 
         private bool IsSimpleType(Type type)
         {
@@ -45,9 +26,9 @@ namespace Mapping
         }
 
 
-        public DataBaseMapping AutoMap()
+        public DatabaseMapping AutoMap()
         {
-            var databaseMapping = new DataBaseMapping();
+            var databaseMapping = new DatabaseMapping();
 
             var dbContextType = _databaseContext.GetType();
             
@@ -106,11 +87,15 @@ namespace Mapping
                         logger.LogInfo($"Property '{property.Name}' has a ForeignKey attribute pointing to '{foreignKeyAttribute.Name}'");
 
                         var foreignKey = new ForeignKey(property.Name, foreignKeyAttribute.Name);
+
+                        tableMapping.AddForeignKey(foreignKey);
                     }
                 }
+
+                databaseMapping.AddTable(tableMapping);
             }
 
-        return null;
+        return databaseMapping;
 
         }
 

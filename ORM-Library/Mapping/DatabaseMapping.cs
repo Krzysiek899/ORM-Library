@@ -1,14 +1,20 @@
-public class DataBaseMapping{
-    private readonly List<TableMapping> tables = new();
+namespace Mapping
+{
+    public class DatabaseMapping
+    {
+        public List<TableMapping> Tables {get;} = new();
 
-    // private readonly List<RelationMapping> relations = new();
+        // private readonly List<RelationMapping> relations = new();
 
-    // public void AddRelation(RelationMapping relation){
-    //     relations.Add(relation);
-    // }
+        // public void AddRelation(RelationMapping relation){
+        //     relations.Add(relation);
+        // }
 
-    public void AddTable(TableMapping table){
-        tables.Add(table);
+        public void AddTable(TableMapping table)
+        {
+            Tables.Add(table);
+        }
+
     }
 
 }

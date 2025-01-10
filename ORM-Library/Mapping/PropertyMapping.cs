@@ -1,11 +1,15 @@
-public class PropertyMapping
-{
-    public PropertyType PropertyType {get; set;}
-    public string PropertyName {get; set;}
+using Mapping;
 
-    public PropertyMapping(PropertyType propertyType, string propertyName){
-        PropertyType = propertyType;
-        PropertyName = propertyName;
+namespace Mapping {
+    public class PropertyMapping
+    {
+        public PropertyType PropertyType {get; set;}
+        public string PropertyName {get; set;}
+
+        public PropertyMapping(PropertyType propertyType, string propertyName){
+            PropertyType = propertyType;
+            PropertyName = propertyName;
+        }
+
     }
-
 }

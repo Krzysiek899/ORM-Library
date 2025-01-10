@@ -1,21 +1,24 @@
-public class TypeTranslator
+namespace Mapping
 {
-    public static PropertyType Translate(string typeToTraslate, int? numberOfChars = 255)
+    public class TypeTranslator
     {
-        switch(typeToTraslate)
+        public static PropertyType Translate(string typeToTraslate, int? numberOfChars = 255)
         {
-            case "int":
-                return PropertyType.INT;
-            case "string":
-                return PropertyType.VARCHAR;
-            case "decimal":
-                return PropertyType.DECIMAL;
-            case "DateTime":
-                return PropertyType.DATETIME;
-            case "double":
-                return PropertyType.DOUBLE;
-            default:
-                throw new ArgumentException($"Nieobslugiwany typ {typeToTraslate}", nameof(typeToTraslate));
+            switch(typeToTraslate)
+            {
+                case "int":
+                    return PropertyType.INT;
+                case "string":
+                    return PropertyType.VARCHAR;
+                case "decimal":
+                    return PropertyType.DECIMAL;
+                case "DateTime":
+                    return PropertyType.DATETIME;
+                case "double":
+                    return PropertyType.DOUBLE;
+                default:
+                    throw new ArgumentException($"Unsupported type {typeToTraslate}", nameof(typeToTraslate));
+            }
         }
     }
 }

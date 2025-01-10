@@ -1,3 +1,6 @@
+namespace Mapping{
+
+
 public class ForeignKey{
     public string Name {get; set;}
     public string ReferenceTable {get; set;}
@@ -6,4 +9,6 @@ public class ForeignKey{
         Name = name;
         ReferenceTable = referenceTable;
     }
+}
+
 }

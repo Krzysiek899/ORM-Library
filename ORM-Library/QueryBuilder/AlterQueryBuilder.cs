@@ -51,11 +51,29 @@ namespace QueryBuilders
             return this;
         }
 
+        public IAlterBuilder BuildAddConstraint(string key)
+        {
+            _alterQuery += "ADD CONSTRAINT " + key + "\n";
+            return this;
+        }
+
+        public IAlterBuilder BuildForeignKey(string key)
+        {
+            _alterQuery += "FOREIGN KEY (" + key + ")\n";
+            return this;
+        }
+
+        public IAlterBuilder BuildReferences(string targetTable, string targetColumn)
+        {
+            _alterQuery += "REFERENCES " + targetTable + " (" + targetColumn + ")";
+            return this;
+        }
 
         public string GetQuery()
         {
             return _alterQuery + ";";
         }
 
+        
     }
 }

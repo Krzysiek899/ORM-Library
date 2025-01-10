@@ -27,13 +27,13 @@ namespace QueryBuilders{
         public ICreateBuilder BuildFinal()
         {
             _createQuerry.TrimEnd(',', ' ');
-            _createQuerry += ")";
+            _createQuerry += ");";
             return this;
         }
 
         public string GetQuery()
         {
-            return _createQuerry + ";";
+            return _createQuerry;
         }
     }
 }

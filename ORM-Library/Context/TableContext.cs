@@ -41,7 +41,7 @@ public class Table<T> where T : class
         insertQueryBuilder.BuildInsertInto(table, columns).BuildValues(valuesList);
         query = insertQueryBuilder.GetQuery();
         var queryExecutor = _databaseConnection.CreateQueryExecutor();
-        queryExecutor.ExecuteQuery(query);
+        queryExecutor.ExecuteNonQuery(query);
         
         return true;
     }
@@ -83,7 +83,7 @@ public class Table<T> where T : class
         deleteQueryBuilder.BuildDeleteFrom(table).BuildWhere(condition);
         query = deleteQueryBuilder.GetQuery();
         var queryExecutor = _databaseConnection.CreateQueryExecutor();
-        queryExecutor.ExecuteQuery(query);
+        queryExecutor.ExecuteNonQuery(query);
 
         return true;
     }

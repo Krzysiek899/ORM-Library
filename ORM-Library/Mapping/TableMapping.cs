@@ -2,11 +2,11 @@ namespace Mapping
 {
     public class TableMapping{
         public string TableName { get; set; }
-        private readonly List<string> primaryKeys = new ();
+        public List<string> PrimaryKeys {get;} = new ();
 
-        private readonly List<ForeignKey> foreignKeys = new ();
+        public List<ForeignKey> ForeignKeys {get;} = new ();
 
-        private readonly List<PropertyMapping> properties = new();
+        public List<PropertyMapping> Properties {get;}= new();
 
         public TableMapping(string tableName)
         {
@@ -14,15 +14,15 @@ namespace Mapping
         }
         
         public void AddProperty(PropertyMapping property){
-            properties.Add(property);
+            Properties.Add(property);
         }
 
         public void AddPrimaryKey(string primaryKey) {
-            primaryKeys.Add(primaryKey);
+            PrimaryKeys.Add(primaryKey);
         }
 
         public void AddForeignKey(ForeignKey foreignKey){
-            foreignKeys.Add(foreignKey);
+            ForeignKeys.Add(foreignKey);
         }
         
     }

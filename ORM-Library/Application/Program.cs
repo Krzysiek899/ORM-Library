@@ -6,7 +6,7 @@ public class Progrma
     public static void Main(string[] args)
     {
         // Tworzymy obiekt loggera
-            ILogger logger = new ConsoleLogger();
+            Logger logger = Logger.GetInstance();
 
             // Logujemy różne rodzaje komunikatów
             logger.LogInfo("Aplikacja uruchomiona");

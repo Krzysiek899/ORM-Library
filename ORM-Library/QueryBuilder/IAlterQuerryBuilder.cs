@@ -10,6 +10,8 @@ namespace QueryBuilders
         IAlterBuilder BuildRenameTable(string table);
         IAlterBuilder BuildRenameColumn(string column, string newColumn);
         IAlterBuilder BuildAddPrimaryKey(string column);
-
+        IAlterBuilder BuildAddConstraint(string key);
+        IAlterBuilder BuildForeignKey(string key);
+        IAlterBuilder BuildReferences(string targetTable, string targetColumn);
     }
 }
