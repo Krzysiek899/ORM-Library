@@ -32,13 +32,38 @@ public class SelectQuerryBuilder : ISelectBuilder
         return this;
     }
 
-    public ISelectBuilder Having()
+    public ISelectBuilder Having(string condition)
     {
-        _selectQuerry += "HAVING " + 
+        _selectQuerry += "HAVING " + condition;
+        return this;
     }
 
-    public string GetQuerry(){
-        return _selectQuerry;
+    public ISelectBuilder BuildOrderByASC(string columns)
+    {
+        _selectQuerry += "ORDER BY " + columns + " ASC\n";
+        return this;
+    }
+
+    public ISelectBuilder BuildOrderByDESC(string columns)
+    {
+        _selectQuerry += "ORDER BY " + columns + " DESC\n";
+        return this;
+    }
+
+    public ISelectBuilder BuildLimit(int limit)
+    {
+        _selectQuerry += "LIMIT " + limit + "\n";
+        return this;
+    }
+
+    public ISelectBuilder BuildOffset(int offset)
+    {
+        _selectQuerry += "OFFSET " + offset + "\n";
+        return this;
+    }
+
+    public string GetQuery(){
+        return _selectQuerry + ";";
     }
 
 }

@@ -14,5 +14,4 @@ public enum ColumnType{
     DATETIME,
     TIMESTAMP,
     YEAR
-
 }

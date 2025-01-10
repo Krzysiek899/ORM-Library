@@ -1,5 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography;
 public class Table{
     
 
@@ -52,8 +50,4 @@ public class Table{
         PrimaryKeys.Add(primaryKey);
         return true;
     }
-
-    
-
-    
 }

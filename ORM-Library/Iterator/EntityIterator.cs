@@ -1,52 +1,54 @@
+using System;
+using System.Collections;
+using System.Data;
+
 public class EntityIterator : Iterator
 {
     private EntityCollection _collection;
-
-    private int _possition = -1;
-
+    private int _position = -1;
     private bool _reverse = false;
 
     public EntityIterator(EntityCollection collection, bool reverse)
-    {   
-        this._collection = collection;
-        this._reverse = reverse;
+    {
+        _collection = collection;
+        _reverse = reverse;
 
-        if (reverse)
+        if (_reverse)
         {
-            this._possition = collection.getItems().Count;
+            _position = _collection.GetItems().Count;
         }
     }
 
     public override object Current()
     {
-        return this._collection.getItems()[_possition];
+        if (_position < 0 || _position >= _collection.GetItems().Count)
+        {
+            throw new InvalidOperationException("Iterator is out of bounds.");
+        }
+
+        return _collection.GetItems()[_position];
     }
 
     public override object Key()
     {
-        return this._possition;
-    } 
+        return _position;
+    }
 
     public override bool MoveNext()
     {
-        int updatedPossition = this._possition + (this._reverse ? -1 : 1);
+        int updatedPosition = _position + (_reverse ? -1 : 1);
 
-        if (updatedPossition >= 0 && updatedPossition < this._collection.getItems().Count)
+        if (updatedPosition >= 0 && updatedPosition < _collection.GetItems().Count)
         {
-            this._possition = updatedPossition;
+            _position = updatedPosition;
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public override void Reset()
     {
-        this._possition = this._reverse ? this._collection.getItems().Count - 1 : 0;
+        _position = _reverse ? _collection.GetItems().Count - 1 : 0;
     }
-
-
-
 }

@@ -1,29 +1,29 @@
 using System.Collections;
+using System.Data;
+using System.Collections.Generic;
 
 public class EntityCollection : IterableCollection
 {
-    List<string> _collection = new List<string>();
-
-    bool _direction = false;
+    private List<DataRow> _collection = new List<DataRow>();
+    private bool _direction = false;
 
     public void ReverseDirection()
     {
         _direction = !_direction;
     }
 
-    public List<string> getItems()
+    public List<DataRow> GetItems()
     {
         return _collection;
     }
 
-    public void AddItem(string item)
+    public void AddItem(DataRow item)
     {
-        this._collection.Add(item);
+        _collection.Add(item);
     }
 
     public override IEnumerator GetEnumerator()
     {
         return new EntityIterator(this, _direction);
     }
-
 }

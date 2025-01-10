@@ -1,56 +1,43 @@
+using System;
 using System.Data;
 using System.Data.Common;
 
-public class Database
+public class DatabaseConnection
 {
-
-    private static Database? _instance;
     private DbConnection _connection;
 
-    private Database(DbConnection connection)
+    // Konstruktor z typem bazy danych
+    public DatabaseConnection(string connectionString, IDbConnectionFactory factory)
     {
-        _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+        _connection = factory.CreateConnection(connectionString);
+    }  
+
+    // Metoda do uzyskiwania połączenia
+    public DbConnection GetConnection()
+    {
+        return _connection;
     }
 
-    public static Database Instance(DbConnection connection)
+    // Otwarcie połączenia
+    public void Open()
     {
-        if (_instance == null)
+        if (_connection.State != ConnectionState.Open)
         {
-            _instance = new Database(connection);
-        }
-        else {
-            _instance.ChangeConnection(connection);
-        }
-        return _instance;
-    }
-    
-    public bool Connect(){
-        try {
             _connection.Open();
-            return true;
-        }
-        catch (Exception e){
-            return false;
         }
     }
 
-    public bool Disconnect(){
-        try {
-            if (_connection.State != ConnectionState.Closed) {
-                _connection.Close();
-            }
-            return true;
-        }
-        catch (Exception e){
-            return false;
+    // Zamknięcie połączenia
+    public void Close()
+    {
+        if (_connection.State != ConnectionState.Closed)
+        {
+            _connection.Close();
         }
     }
 
-    public void ChangeConnection(DbConnection newConnection){
-        if (_connection.State == ConnectionState.Open) {
-            Disconnect();
-        }
-        new Database(newConnection);
+    public QueryExecutor CreateQueryExecutor()
+    {
+        return new QueryExecutor(_connection);
     }
-    
 }
