@@ -1,6 +1,6 @@
 using System.Collections;
 
-abstract class Iterator : IEnumerator
+public abstract class Iterator : IEnumerator
 {
     object IEnumerator.Current => Current();
 
@@ -8,6 +8,5 @@ abstract class Iterator : IEnumerator
     public abstract object Current();
     public abstract bool MoveNext();
     public abstract void Reset();
-    public abstract bool HasMore();
 
 }

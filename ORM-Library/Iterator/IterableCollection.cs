@@ -1,7 +1,6 @@
-public interface IterableCollection
+using System.Collections;
+
+public abstract class IterableCollection
 {
-    // public Iterator CreateIterator()
-    // {
-    //     throw new NotImplementedException();
-    // }
+    public abstract IEnumerator GetEnumerator();
 }
