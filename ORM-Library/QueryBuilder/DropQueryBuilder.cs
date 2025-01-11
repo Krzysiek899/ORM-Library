@@ -18,5 +18,7 @@ namespace ORMLibrary.QueryBuilders
         public string GetQuery(){
             return _dropQuerry + ";";
         }
+
+        
     }
 }

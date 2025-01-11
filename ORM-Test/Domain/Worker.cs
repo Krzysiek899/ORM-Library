@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ORMTest.Domain
 {
-    [Table("Workers")]
+    [Table("workers")]
     public class Worker
     {
         [Key]
         public int Worker_id {get; set;}
-        [ForeignKey("Companies")]
+        [ForeignKey("companies")]
         public int Company_id {get; set;}
         [MaxLength(50)]
         public string Name { get; set; }

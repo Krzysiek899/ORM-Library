@@ -9,8 +9,12 @@ namespace ORMLibrary.QueryBuilders
             return this;
         }
         
-        public IAlterBuilder BuildAddColumn(string column, string type)
+        public IAlterBuilder BuildAddColumn(string column, string type, string maxLength = "256")
         {
+            if(type == "VARCHAR")
+            {
+                type += "(" + maxLength + ")";
+            }
             _alterQuery += "ADD COLUMN " + column + " " + type + "\n";
             return this;
         }
@@ -66,6 +70,12 @@ namespace ORMLibrary.QueryBuilders
         public IAlterBuilder BuildReferences(string targetTable, string targetColumn)
         {
             _alterQuery += "REFERENCES " + targetTable + " (" + targetColumn + ")";
+            return this;
+        }
+
+        public IAlterBuilder BuildDropConstraint(string key)
+        {
+            _alterQuery += "DROP FOREIGN KEY " + key + "\n";
             return this;
         }
 

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ORMTest.Domain
 {
-    [Table("Companies")]
+    [Table("companies")]
     public class Company
     {
         [Key]
