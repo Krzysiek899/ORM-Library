@@ -1,6 +1,7 @@
-namespace Mapping
+namespace ORMLibrary.Mapping
 {
-    public class TableMapping{
+    public class TableMapping
+    {
         public string TableName { get; set; }
         public List<string> PrimaryKeys {get;} = new ();
 

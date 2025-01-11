@@ -1,0 +1,12 @@
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/bin/Debug/net7.0/ORM-Library.deps.json
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/bin/Debug/net7.0/ORM-Library.dll
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/bin/Debug/net7.0/ORM-Library.pdb
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.csproj.AssemblyReference.cache
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.GeneratedMSBuildEditorConfig.editorconfig
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.AssemblyInfoInputs.cache
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.AssemblyInfo.cs
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.csproj.CoreCompileInputs.cache
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.dll
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/refint/ORM-Library.dll
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.pdb
+/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ref/ORM-Library.dll

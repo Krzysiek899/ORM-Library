@@ -1,6 +1,9 @@
 using System.Collections;
 
-public abstract class IterableCollection
+namespace ORMLibrary.Iterator
 {
-    public abstract IEnumerator GetEnumerator();
+    public abstract class IterableCollection
+    {
+        public abstract IEnumerator GetEnumerator();
+    }
 }

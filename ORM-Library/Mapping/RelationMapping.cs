@@ -1,4 +1,4 @@
-namespace Mapping
+namespace ORMLibrary.Mapping
 {
 
     public class RelationMapping

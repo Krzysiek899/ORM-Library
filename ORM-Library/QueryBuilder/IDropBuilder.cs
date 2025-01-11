@@ -1,4 +1,4 @@
-namespace QueryBuilders
+namespace ORMLibrary.QueryBuilders
 {
     public interface IDropBuilder 
     {

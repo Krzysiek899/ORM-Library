@@ -1,20 +1,27 @@
-namespace QueryBuilders{
-    public class CreateQuerryBuilder : ICreateBuilder
+namespace ORMLibrary.QueryBuilders{    public class CreateQuerryBuilder : ICreateBuilder
     {
         private string _createQuerry = "";
         public ICreateBuilder BuildCreate(string tableName)
         {
-            _createQuerry += "CREATE TABLE " + tableName + "(\n";
+            _createQuerry += "CREATE TABLE IF NOT EXISTS " + tableName + "(\n";
             return this;
         }
 
-        public ICreateBuilder BuildAddType(string columnName, string type, bool isPrimaryKey)
-        {
-            _createQuerry += "\t" + columnName + " " + type + " ";
-            if(isPrimaryKey)
+        public ICreateBuilder BuildAddType(string columnName, string type, string? maxLength, bool isPrimaryKey)
+        {   
+            if(type == "VARCHAR")
             {
-                _createQuerry += "PRIMARY KEY,\n";
-            }    
+                type += "(" + maxLength + ")";
+            }
+            _createQuerry += "\t" + columnName + " " + type;
+            if (isPrimaryKey)
+            {
+                _createQuerry += " PRIMARY KEY,\n";
+            }
+            else
+            {
+                _createQuerry += ",\n";
+            }
             return this;
         }
 
@@ -26,7 +33,10 @@ namespace QueryBuilders{
 
         public ICreateBuilder BuildFinal()
         {
-            _createQuerry.TrimEnd(',', ' ');
+            if (_createQuerry.EndsWith(",\n"))
+            {
+                _createQuerry = _createQuerry.Substring(0, _createQuerry.Length - 2) + "\n";
+            }
             _createQuerry += ");";
             return this;
         }

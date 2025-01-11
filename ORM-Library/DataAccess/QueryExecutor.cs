@@ -3,64 +3,67 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 
-public class QueryExecutor
+namespace ORMLibrary.DataAccess
 {
-    private DbConnection _connection;
-
-    public QueryExecutor(DbConnection connection)
+    public class QueryExecutor
     {
-        _connection = connection;
-    }
+        private DbConnection _connection;
 
-    public int ExecuteNonQuery(string query, List<DbParameter>? parameters = null)
-    {
-        using (var command = _connection.CreateCommand())
+        public QueryExecutor(DbConnection connection)
         {
-            command.CommandText = query;
-
-            if (parameters != null)
-            {
-                foreach (var param in parameters)
-                {
-                    command.Parameters.Add(param);
-                }
-            }
-
-            // Ensure the connection is open
-            if (_connection.State != ConnectionState.Open)
-            {
-                _connection.Open();
-            }
-
-            return command.ExecuteNonQuery();
+            _connection = connection;
         }
-    }
 
-    public DataTable ExecuteQuery(string query, List<DbParameter>? parameters = null)
-    {
-        using (var command = _connection.CreateCommand())
+        public int ExecuteNonQuery(string query, List<DbParameter>? parameters = null)
         {
-            command.CommandText = query;
-
-            if (parameters != null)
+            using (var command = _connection.CreateCommand())
             {
-                foreach (var param in parameters)
+                command.CommandText = query;
+
+                if (parameters != null)
                 {
-                    command.Parameters.Add(param);
+                    foreach (var param in parameters)
+                    {
+                        command.Parameters.Add(param);
+                    }
                 }
-            }
 
-            // Ensure the connection is open
-            if (_connection.State != ConnectionState.Open)
-            {
-                _connection.Open();
-            }
+                // Ensure the connection is open
+                if (_connection.State != ConnectionState.Open)
+                {
+                    _connection.Open();
+                }
 
-            using (var reader = command.ExecuteReader())
+                return command.ExecuteNonQuery();
+            }
+        }
+
+        public DataTable ExecuteQuery(string query, List<DbParameter>? parameters = null)
+        {
+            using (var command = _connection.CreateCommand())
             {
-                var dataTable = new DataTable();
-                dataTable.Load(reader);
-                return dataTable;
+                command.CommandText = query;
+
+                if (parameters != null)
+                {
+                    foreach (var param in parameters)
+                    {
+                        command.Parameters.Add(param);
+                    }
+                }
+
+                // Ensure the connection is open
+                if (_connection.State != ConnectionState.Open)
+                {
+                    _connection.Open();
+                }
+
+                using (var reader = command.ExecuteReader())
+                {
+                    var dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    return dataTable;
+                }
             }
         }
     }

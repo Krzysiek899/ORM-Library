@@ -2,143 +2,149 @@ using System;
 using System.ComponentModel;
 using System.Data;
 using System.Reflection;
-using QueryBuilders;
+using ORMLibrary.DataAccess;
+using ORMLibrary.QueryBuilders;
+using ORMLibrary.Iterator;
 
-public class Table<T> where T : class
-{
+namespace ORMLibrary.Context{
 
-    private DatabaseConnection _databaseConnection;
-
-    public Table (DatabaseConnection databaseConnection)
-    {
-        _databaseConnection = databaseConnection;
-    }
-
-// get, update
-    public bool Add<Y>(Y argument)
+    public class Table<T> where T : class
     {
 
-        if(typeof(T).Equals(typeof(Y)))
+        private DatabaseConnection _databaseConnection;
+
+        public Table (DatabaseConnection databaseConnection)
         {
-            return false;
+            _databaseConnection = databaseConnection;
         }
 
-        PropertyInfo[] properties = typeof(Y).GetProperties();
-
-        var insertQueryBuilder = new InsertQuerryBuilder();
-        string query, columns = "", values = "", table = typeof(Y).Name;
-
-        foreach(PropertyInfo property in properties)
+    // get, update
+        public bool Add<Y>(Y argument)
         {
-            columns += property.Name + ", ";
-            values +=  $"'{property.GetValue(argument)}'";
-        }
 
-        columns = columns.TrimEnd(',', ' ');
-        values = values.TrimEnd(',', ' ');
-        List<string> valuesList = values.Split(new[] {", "}, StringSplitOptions.None).ToList(); //przeksztalca string values na liste
-
-        insertQueryBuilder.BuildInsertInto(table, columns).BuildValues(valuesList);
-        query = insertQueryBuilder.GetQuery();
-        var queryExecutor = _databaseConnection.CreateQueryExecutor();
-        queryExecutor.ExecuteNonQuery(query);
-        
-        return true;
-    }
-
-    public bool Remove<Y>(Y argument)
-    {
-        if(typeof(T).Equals(typeof(Y)))
-        {
-            return false;
-        }
-
-        PropertyInfo[] properties = typeof(Y).GetProperties();
-
-        var deleteQueryBuilder = new DeleteQuerryBuilder();
-        string query, columns = "", values = "", table = typeof(Y).Name;
-
-        foreach(PropertyInfo property in properties)
-        {
-            columns += property.Name + ", ";
-            values +=  $"'{property.GetValue(argument)}'";
-        }
-
-        columns = columns.TrimEnd(',', ' ');
-        values = values.TrimEnd(',', ' ');
-        List<string> columnsList = columns.Split(new[] {", "}, StringSplitOptions.None).ToList();
-        List<string> valuesList = values.Split(new[] {", "}, StringSplitOptions.None).ToList();
-
-        string condition = "";
-        for(int i = 0; i < valuesList.Count; i++)
-        {
-            if(i == valuesList.Count - 1)
+            if(typeof(T).Equals(typeof(Y)))
             {
-                condition += columnsList[i] + " = " + valuesList[i];
-                break;
+                return false;
             }
-            condition += columnsList[i] + " = " + valuesList[i] + " AND ";
-        }
 
-        deleteQueryBuilder.BuildDeleteFrom(table).BuildWhere(condition);
-        query = deleteQueryBuilder.GetQuery();
-        var queryExecutor = _databaseConnection.CreateQueryExecutor();
-        queryExecutor.ExecuteNonQuery(query);
+            PropertyInfo[] properties = typeof(Y).GetProperties();
 
-        return true;
-    }
+            var insertQueryBuilder = new InsertQuerryBuilder();
+            string query, columns = "", values = "", table = typeof(Y).Name;
 
-    // public Table ToList()
-    // {   
-    //     var selectQuerryBuilder = new SelectQuerryBuilder();
-    //     selectQuerryBuilder.BuildSelect("*").BuildFrom(typeof(T).Name);
-    //     string query = selectQuerryBuilder.GetQuery();
-    //     var queryExecutor = _databaseConnection.CreateQueryExecutor();
-    //     DataTable result = queryExecutor.ExecuteQuery(query);
-        
-        
+            foreach(PropertyInfo property in properties)
+            {
+                columns += property.Name + ", ";
+                values +=  $"'{property.GetValue(argument)}'";
+            }
 
-    //     return new NotImplementedException();
-    // }
+            columns = columns.TrimEnd(',', ' ');
+            values = values.TrimEnd(',', ' ');
+            List<string> valuesList = values.Split(new[] {", "}, StringSplitOptions.None).ToList(); //przeksztalca string values na liste
 
-    // public object First<Y>(Y argument)
-    // {
-    //     var selectQuerryBuilder = new SelectQuerryBuilder();
-    //     selectQuerryBuilder.BuildSelect("*").BuildFrom(typeof(Y).Name);
-    //     string query = selectQuerryBuilder.GetQuery();
-    //     var queryExecutor = _databaseConnection.CreateQueryExecutor();
-    //     var result = queryExecutor.ExecuteQuery(query);
-        
-    //     if(result.Rows.Count > 0)
-    //     {
-    //         var entity = new Y();
+            insertQueryBuilder.BuildInsertInto(table, columns).BuildValues(valuesList);
+            query = insertQueryBuilder.GetQuery();
+            var queryExecutor = _databaseConnection.CreateQueryExecutor();
+            queryExecutor.ExecuteNonQuery(query);
             
-    //     }
-
-
-
-    //     // if(typeof(T).Equals(typeof(Y)))
-    //     // {
-    //     //     return null;
-    //     // }
-    //     // return 
-    // }
-
-    public T First(EntityCollection dataTable)
-    {
-        EntityIterator iterator = new EntityIterator(dataTable, false);
-
-        if(iterator.MoveNext())
-        {
-            return (T)iterator.Current();
+            return true;
         }
-        return null;
+
+        public bool Remove<Y>(Y argument)
+        {
+            if(typeof(T).Equals(typeof(Y)))
+            {
+                return false;
+            }
+
+            PropertyInfo[] properties = typeof(Y).GetProperties();
+
+            var deleteQueryBuilder = new DeleteQuerryBuilder();
+            string query, columns = "", values = "", table = typeof(Y).Name;
+
+            foreach(PropertyInfo property in properties)
+            {
+                columns += property.Name + ", ";
+                values +=  $"'{property.GetValue(argument)}'";
+            }
+
+            columns = columns.TrimEnd(',', ' ');
+            values = values.TrimEnd(',', ' ');
+            List<string> columnsList = columns.Split(new[] {", "}, StringSplitOptions.None).ToList();
+            List<string> valuesList = values.Split(new[] {", "}, StringSplitOptions.None).ToList();
+
+            string condition = "";
+            for(int i = 0; i < valuesList.Count; i++)
+            {
+                if(i == valuesList.Count - 1)
+                {
+                    condition += columnsList[i] + " = " + valuesList[i];
+                    break;
+                }
+                condition += columnsList[i] + " = " + valuesList[i] + " AND ";
+            }
+
+            deleteQueryBuilder.BuildDeleteFrom(table).BuildWhere(condition);
+            query = deleteQueryBuilder.GetQuery();
+            var queryExecutor = _databaseConnection.CreateQueryExecutor();
+            queryExecutor.ExecuteNonQuery(query);
+
+            return true;
+        }
+
+
+
+        
+        
+        public List<T> ToList()
+        {   
+            var selectQuerryBuilder = new SelectQuerryBuilder();
+            selectQuerryBuilder.BuildSelect("*").BuildFrom(typeof(T).Name);
+            string query = selectQuerryBuilder.GetQuery();
+            var queryExecutor = _databaseConnection.CreateQueryExecutor();
+            DataTable result = queryExecutor.ExecuteQuery(query);
+
+            var entityCollection = new EntityCollection();
+            foreach(DataRow row in result.Rows)
+            {
+                entityCollection.AddItem(row);
+            }
+            var entityIterator = new EntityIterator(entityCollection, false);
+
+            var list = new List<T>();
+
+            while(entityIterator.MoveNext())
+            {
+                
+            }
+
+            // foreach (DataRow row in result.Rows)
+            // {
+            //     T obj = Activator.CreateInstance<T>();
+            //     foreach (PropertyInfo property in typeof(T).GetProperties())
+            //     {
+            //         if (result.Columns.Contains(property.Name) && row[property.Name] != DBNull.Value)
+            //         {
+            //             property.SetValue(obj, row[property.Name]);
+            //         }
+            //     }
+            //     list.Add(obj);
+            // }
+            return list;
+        }   
+
+        public T? First()
+        {
+            var list = ToList();
+            return list.Count > 0 ? list[0] : default(T);
+        } 
+
+
+        public bool Update<Y>(Y argument)
+        {
+
+            return true;
+        }
+
     }
-
-    public bool Update<Y>(Y argument)
-    {
-
-        return true;
-    }
-
 }

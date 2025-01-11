@@ -1,10 +1,13 @@
 using System.Data.Common;
 using System.Data.SqlClient;
 
-public class SqlServerConnectionFactory : IDbConnectionFactory
+namespace ORMLibrary.DataAccess.DatabaseConnectionFactories
 {
-    public DbConnection CreateConnection(string connectionString)
+    public class SqlServerConnectionFactory : IDbConnectionFactory
     {
-        return new SqlConnection(connectionString);
+        public DbConnection CreateConnection(string connectionString)
+        {
+            return new SqlConnection(connectionString);
+        }
     }
 }

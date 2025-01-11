@@ -1,10 +1,13 @@
 using System.Data.Common;
 using Npgsql;
 
-public class PostgreSqlConnectionFactory : IDbConnectionFactory
+namespace ORMLibrary.DataAccess.DatabaseConnectionFactories
 {
-    public DbConnection CreateConnection(string connectionString)
+    public class PostgreSqlConnectionFactory : IDbConnectionFactory
     {
-        return new NpgsqlConnection(connectionString);
+        public DbConnection CreateConnection(string connectionString)
+        {
+            return new NpgsqlConnection(connectionString);
+        }
     }
 }

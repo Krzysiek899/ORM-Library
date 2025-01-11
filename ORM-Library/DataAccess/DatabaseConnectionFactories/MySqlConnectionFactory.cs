@@ -1,10 +1,14 @@
 using System.Data.Common;
 using MySql.Data.MySqlClient;
 
-public class MySqlConnectionFactory : IDbConnectionFactory
+namespace ORMLibrary.DataAccess.DatabaseConnectionFactories
 {
-    public DbConnection CreateConnection(string connectionString)
+
+    public class MySqlConnectionFactory : IDbConnectionFactory
     {
-        return new MySqlConnection(connectionString);
+        public DbConnection CreateConnection(string connectionString)
+        {
+            return new MySqlConnection(connectionString);
+        }
     }
 }

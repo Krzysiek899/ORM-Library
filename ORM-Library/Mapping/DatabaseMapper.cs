@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
-using Logging;
+using ORMLibrary.Logging;
+using ORMLibrary.Context;
+using Microsoft.VisualBasic;
 
-namespace Mapping
+namespace ORMLibrary.Mapping
 {
 
 
@@ -46,7 +48,7 @@ namespace Mapping
 
                 logger.LogInfo($"Found Table for type: {tableType.Name}");
 
-                var attributes = tableType.GetCustomAttributes(false);
+                var attributes = tableType.GetCustomAttributes(true);
 
                 var tableName = tableType.Name;
                 
@@ -56,11 +58,12 @@ namespace Mapping
                         // Sprawdź, czy atrybut jest typu Table
                         if (attribute is TableAttribute tableAttribute)
                         {
+                            logger.LogInfo($"Found Table Attribute: {tableAttribute.Name}");
                             tableName = tableAttribute.Name;
                         }
                     }
 
-                var tableMapping = new TableMapping(tableType.Name);
+                var tableMapping = new TableMapping(tableName);
                 
                 var properties = tableType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => IsSimpleType(p.PropertyType))
@@ -73,6 +76,13 @@ namespace Mapping
                     PropertyType propertyType = TypeTranslator.Translate(property.PropertyType.Name);
 
                     var propertyMapping = new PropertyMapping(propertyType, property.Name);
+                    
+                    var maxLengthAttribute = property.GetCustomAttribute<MaxLengthAttribute>();
+                    if( maxLengthAttribute != null)
+                    {
+                        propertyMapping.addModificator(AdditionalModificator.VARCHAR_LEN, maxLengthAttribute.Length.ToString());
+                    }
+
                     tableMapping.AddProperty(propertyMapping);
 
                     if(property.GetCustomAttribute<KeyAttribute>() != null)

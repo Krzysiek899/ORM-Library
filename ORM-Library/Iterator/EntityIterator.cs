@@ -2,53 +2,68 @@ using System;
 using System.Collections;
 using System.Data;
 
-public class EntityIterator : Iterator
+namespace ORMLibrary.Iterator
 {
-    private EntityCollection _collection;
-    private int _position = -1;
-    private bool _reverse = false;
-
-    public EntityIterator(EntityCollection collection, bool reverse)
+    public class EntityIterator : Iterator
     {
-        _collection = collection;
-        _reverse = reverse;
+        private EntityCollection _collection;
+        private int _position = -1;
+        private bool _reverse = false;
 
-        if (_reverse)
+        public EntityIterator(EntityCollection collection, bool reverse)
         {
-            _position = _collection.GetItems().Count;
-        }
-    }
+            _collection = collection;
+            _reverse = reverse;
 
-    public override object Current()
-    {
-        if (_position < 0 || _position >= _collection.GetItems().Count)
-        {
-            throw new InvalidOperationException("Iterator is out of bounds.");
+            if (_reverse)
+            {
+                _position = _collection.GetItems().Count;
+            }
         }
 
-        return _collection.GetItems()[_position];
-    }
-
-    public override object Key()
-    {
-        return _position;
-    }
-
-    public override bool MoveNext()
-    {
-        int updatedPosition = _position + (_reverse ? -1 : 1);
-
-        if (updatedPosition >= 0 && updatedPosition < _collection.GetItems().Count)
+        public override object Current()
         {
-            _position = updatedPosition;
-            return true;
+            if (_position < 0 || _position >= _collection.GetItems().Count)
+            {
+                throw new InvalidOperationException("Iterator is out of bounds.");
+            }
+
+            return _collection.GetItems()[_position];
         }
 
-        return false;
-    }
+        public override object Key()
+        {
+            return _position;
+        }
 
-    public override void Reset()
-    {
-        _position = _reverse ? _collection.GetItems().Count - 1 : 0;
+        public override bool MoveNext()
+        {
+            int updatedPosition = _position + (_reverse ? -1 : 1);
+
+            if (updatedPosition >= 0 && updatedPosition < _collection.GetItems().Count)
+            {
+                _position = updatedPosition;
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool HasNext()
+        {
+            int updatedPosition = _position + (_reverse ? -1 : 1);
+            if ((updatedPosition >= 0 && updatedPosition < _collection.GetItems().Count ) && !_reverse )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override void Reset()
+        {
+            _position = _reverse ? _collection.GetItems().Count - 1 : 0;
+        }
     }
 }
+

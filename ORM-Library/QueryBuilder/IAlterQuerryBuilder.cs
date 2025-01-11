@@ -1,4 +1,4 @@
-namespace QueryBuilders
+namespace ORMLibrary.QueryBuilders
 {
     public interface IAlterBuilder
     {
@@ -13,5 +13,9 @@ namespace QueryBuilders
         IAlterBuilder BuildAddConstraint(string key);
         IAlterBuilder BuildForeignKey(string key);
         IAlterBuilder BuildReferences(string targetTable, string targetColumn);
+
+        IAlterBuilder BuildFinal();
+
+        string GetQuery();
     }
 }

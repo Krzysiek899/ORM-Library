@@ -1,4 +1,4 @@
-namespace QueryBuilders
+namespace ORMLibrary.QueryBuilders
 {
     public class AlterQuerryBuilder : IAlterBuilder
     {
@@ -69,9 +69,15 @@ namespace QueryBuilders
             return this;
         }
 
+        public IAlterBuilder BuildFinal()
+        {
+            _alterQuery += ";";
+            return this;
+        }
+
         public string GetQuery()
         {
-            return _alterQuery + ";";
+            return _alterQuery;
         }
 
         

@@ -1,9 +1,11 @@
-using Mapping;
+namespace ORMLibrary.Mapping {
 
-namespace Mapping {
     public class PropertyMapping
     {
         public PropertyType PropertyType {get; set;}
+
+        public Dictionary<AdditionalModificator, string> AdditionalModificators {get;} = new Dictionary<AdditionalModificator, string>();
+
         public string PropertyName {get; set;}
 
         public PropertyMapping(PropertyType propertyType, string propertyName){
@@ -11,5 +13,13 @@ namespace Mapping {
             PropertyName = propertyName;
         }
 
+        public void addModificator(AdditionalModificator modificator, string modificatorValue){
+            AdditionalModificators.Add(modificator, modificatorValue);
+        }
+
+    }
+
+    public enum AdditionalModificator{
+        VARCHAR_LEN
     }
 }

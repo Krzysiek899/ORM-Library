@@ -1,43 +1,48 @@
 using System;
 using System.Data;
 using System.Data.Common;
+using ORMLibrary.DataAccess.DatabaseConnectionFactories;
 
-public class DatabaseConnection
+namespace ORMLibrary.DataAccess
 {
-    private DbConnection _connection;
 
-    // Konstruktor z typem bazy danych
-    public DatabaseConnection(string connectionString, IDbConnectionFactory factory)
+    public class DatabaseConnection
     {
-        _connection = factory.CreateConnection(connectionString);
-    }  
+        private DbConnection _connection;
 
-    // Metoda do uzyskiwania połączenia
-    public DbConnection GetConnection()
-    {
-        return _connection;
-    }
-
-    // Otwarcie połączenia
-    public void Open()
-    {
-        if (_connection.State != ConnectionState.Open)
+        // Konstruktor z typem bazy danych
+        public DatabaseConnection(string connectionString, IDbConnectionFactory factory)
         {
-            _connection.Open();
-        }
-    }
+            _connection = factory.CreateConnection(connectionString);
+        }  
 
-    // Zamknięcie połączenia
-    public void Close()
-    {
-        if (_connection.State != ConnectionState.Closed)
+        // Metoda do uzyskiwania połączenia
+        public DbConnection GetConnection()
         {
-            _connection.Close();
+            return _connection;
         }
-    }
 
-    public QueryExecutor CreateQueryExecutor()
-    {
-        return new QueryExecutor(_connection);
+        // Otwarcie połączenia
+        public void Open()
+        {
+            if (_connection.State != ConnectionState.Open)
+            {
+                _connection.Open();
+            }
+        }
+
+        // Zamknięcie połączenia
+        public void Close()
+        {
+            if (_connection.State != ConnectionState.Closed)
+            {
+                _connection.Close();
+            }
+        }
+
+        public QueryExecutor CreateQueryExecutor()
+        {
+            return new QueryExecutor(_connection);
+        }
     }
 }

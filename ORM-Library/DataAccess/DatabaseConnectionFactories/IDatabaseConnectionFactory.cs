@@ -1,6 +1,9 @@
 using System.Data.Common;
 
-public interface IDbConnectionFactory
+namespace ORMLibrary.DataAccess.DatabaseConnectionFactories
 {
-    DbConnection CreateConnection(string connectionString);
+    public interface IDbConnectionFactory
+    {
+        DbConnection CreateConnection(string connectionString);
+    }
 }

@@ -1,4 +1,4 @@
-namespace Mapping
+namespace ORMLibrary.Mapping
 {
     public class TypeTranslator
     {
@@ -6,15 +6,15 @@ namespace Mapping
         {
             switch(typeToTraslate)
             {
-                case "int":
+                case "Int32":
                     return PropertyType.INT;
-                case "string":
+                case "String":
                     return PropertyType.VARCHAR;
-                case "decimal":
+                case "Decimal":
                     return PropertyType.DECIMAL;
                 case "DateTime":
-                    return PropertyType.DATETIME;
-                case "double":
+                    return PropertyType.TIMESTAMP;
+                case "Double":
                     return PropertyType.DOUBLE;
                 default:
                     throw new ArgumentException($"Unsupported type {typeToTraslate}", nameof(typeToTraslate));
