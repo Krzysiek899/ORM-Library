@@ -52,7 +52,9 @@ namespace ORMLibrary.Iterator
         public override bool HasNext()
         {
             int updatedPosition = _position + (_reverse ? -1 : 1);
-            if ((updatedPosition >= 0 && updatedPosition < _collection.GetItems().Count ) && !_reverse )
+            if ((updatedPosition >= 0 && updatedPosition < _collection.GetItems().Count  && !_reverse)
+                || (updatedPosition > 0 && updatedPosition <= _collection.GetItems().Count - 1 && _reverse)                
+                )
             {
                 return true;
             }

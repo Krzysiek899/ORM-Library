@@ -113,9 +113,11 @@ namespace ORMLibrary.Context{
 
             var list = new List<T>();
 
-            while(entityIterator.MoveNext())
+            while(entityIterator.HasNext())
             {
-                
+                T obj = Activator.CreateInstance<T>();
+
+                DataRow row = (DataRow)entiy
             }
 
             // foreach (DataRow row in result.Rows)
