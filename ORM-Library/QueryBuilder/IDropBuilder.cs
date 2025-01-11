@@ -4,5 +4,6 @@ namespace ORMLibrary.QueryBuilders
     {
         IDropBuilder BuildDropTable(string tableName);
         IDropBuilder BuildDropDatabase(string databaseName);
+        public string GetQuery();
     }
 }

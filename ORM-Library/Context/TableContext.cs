@@ -117,21 +117,18 @@ namespace ORMLibrary.Context{
             {
                 T obj = Activator.CreateInstance<T>();
 
-                DataRow row = (DataRow)entiy
-            }
+                DataRow row = (DataRow)entityIterator.Current();
 
-            // foreach (DataRow row in result.Rows)
-            // {
-            //     T obj = Activator.CreateInstance<T>();
-            //     foreach (PropertyInfo property in typeof(T).GetProperties())
-            //     {
-            //         if (result.Columns.Contains(property.Name) && row[property.Name] != DBNull.Value)
-            //         {
-            //             property.SetValue(obj, row[property.Name]);
-            //         }
-            //     }
-            //     list.Add(obj);
-            // }
+                foreach(PropertyInfo property in typeof(T).GetProperties())
+                {   
+                    if(result.Columns.Contains(property.Name) && row[property.Name] != DBNull.Value)
+                    {
+                        property.SetValue(obj, row[property.Name]);
+                    }
+                }
+                list.Add(obj);
+                entityIterator.MoveNext();
+            }
             return list;
         }   
 

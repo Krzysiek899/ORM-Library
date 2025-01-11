@@ -29,7 +29,7 @@ namespace ORMTest
                 // }
 
                 PostgreSqlConnectionFactory postgreSqlConnectionFactory = new PostgreSqlConnectionFactory();
-                string connectionString = "Host=localhost;Port=5432;Database=ORM-Test;Username=postgres;Password=b@zy4D@nych;";
+                string connectionString = "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=123m123m;";
                 
                 var dbContext = new CompaniesContext(connectionString, postgreSqlConnectionFactory);
                 
