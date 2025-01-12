@@ -40,27 +40,54 @@ public abstract class DatabaseContext
     }
 
     private string DetectDatabaseType()
-{
-    var connection = _databaseConnection.GetConnection();
-    
-    if (connection is MySqlConnection)
     {
-        return "MySQL";
+        var connection = _databaseConnection.GetConnection();
+        
+        if (connection is MySqlConnection)
+        {
+            return "MySQL";
+        }
+        else if (connection is NpgsqlConnection)
+        {
+            return "PostgreSQL";
+        }
+        
+        throw new InvalidOperationException("Unsupported database type");
     }
-    else if (connection is NpgsqlConnection)
-    {
-        return "PostgreSQL";
-    }
-    
-    throw new InvalidOperationException("Unsupported database type");
-}
 
 
     private bool Map()
     {
 
         string databaseType = DetectDatabaseType();
+
+        string queryX = @"
+            SELECT 
+                TABLE_NAME, 
+                CONSTRAINT_NAME, 
+            FROM 
+                information_schema.KEY_COLUMN_USAGE
+            WHERE 
+                REFERENCED_TABLE_NAME IS NOT NULL 
+                AND TABLE_SCHEMA = DATABASE();
+        ";
+
         
+        var foreignKeys = _databaseConnection
+            .CreateQueryExecutor()
+            .ExecuteQuery(queryX)
+            .AsEnumerable()
+            .Select(row => (
+                Name : row["CONSTRAINT_NAME"].ToString(),
+                Column : row["COLUMN_NAME"].ToString()
+            ))
+            .ToList()!;
+        
+        foreach (var foreignKey in foreignKeys)
+        {
+            logger.LogInfo($"Foreign Key: {foreignKey.Name} {foreignKey.Column}");
+        }
+
 
         string dropForeignKeysQuery = databaseType == "MySQL"
         ? @"DELIMITER $$
