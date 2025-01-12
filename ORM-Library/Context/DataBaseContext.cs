@@ -63,11 +63,39 @@ public abstract class DatabaseContext
         
 
         string dropForeignKeysQuery = databaseType == "MySQL"
-        ? @"SET FOREIGN_KEY_CHECKS = 0;
-            SELECT CONCAT('ALTER TABLE ', table_name, ' DROP FOREIGN KEY ', constraint_name, ';') AS query
-            FROM information_schema.key_column_usage 
-            WHERE table_schema = DATABASE();
-            SET FOREIGN_KEY_CHECKS = 1;"
+        ? @"DELIMITER $$
+
+        CREATE PROCEDURE DropAllForeignKeys()
+        BEGIN
+            DECLARE done INT DEFAULT 0;
+            DECLARE table_name VARCHAR(255);
+            DECLARE constraint_name VARCHAR(255);
+            DECLARE cur CURSOR FOR 
+                SELECT table_name, constraint_name
+                FROM information_schema.key_column_usage 
+                WHERE table_schema = DATABASE();
+            
+            DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+            
+            OPEN cur;
+            
+            read_loop: LOOP
+                FETCH cur INTO table_name, constraint_name;
+                IF done THEN
+                    LEAVE read_loop;
+                END IF;
+                
+                SET @sql = CONCAT('ALTER TABLE ', table_name, ' DROP FOREIGN KEY ', constraint_name);
+                PREPARE stmt FROM @sql;
+                EXECUTE stmt;
+                DEALLOCATE PREPARE stmt;
+            END LOOP;
+            
+            CLOSE cur;
+        END$$
+
+        DELIMITER ;
+        "
         : @"
             DO $$
             DECLARE
@@ -94,14 +122,9 @@ public abstract class DatabaseContext
                 END LOOP;
             END $$;
             ";
+        
 
-
-    
-
-        if(_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropForeignKeysQuery) == 0)
-        {
-            logger.LogError("Bład przy usuwaniu kluczy", new Exception("Error while dripping foreign keys"));
-        }
+        //_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropForeignKeysQuery);
         logger.LogInfo("Foreign Keys Dropped");
 
         
@@ -123,6 +146,8 @@ public abstract class DatabaseContext
             .Where(tableName => tableName != null)
             .ToList()!;
 
+        logger.LogInfo($"Existing tables: {string.Join(", ", existingTables)}");
+
         // Znalezienie tabel, które są w bazie danych, ale nie w mapowaniu
         List<string> tablesToRemove = existingTables
             .Except(databaseMapping.Tables.Select(t => t.TableName), StringComparer.OrdinalIgnoreCase)
@@ -136,15 +161,15 @@ public abstract class DatabaseContext
                 .GetQuery();
 
             logger.LogInfo($"{dropQuery}");
-            if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropQuery) == 0)
-            {
-                return false;
-            }
+            _databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropQuery);
         }
 
         // Tworzenie tabel
+        logger.LogInfo($"Tables in mapping: {string.Join(", ", databaseMapping.Tables.Select(t => t.TableName))}");
+
         foreach (TableMapping table in databaseMapping.Tables)
         {
+            logger.LogInfo($"Current processing table: {table}");
             var sqlBuilder = new CreateQuerryBuilder().BuildCreate(table.TableName);
 
             foreach (PropertyMapping property in table.Properties)
@@ -174,10 +199,7 @@ public abstract class DatabaseContext
             logger.LogInfo(query);
 
             // Wykonanie zapytania
-            if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(query) == 0)
-            {
-                return false;
-            }
+            _databaseConnection.CreateQueryExecutor().ExecuteNonQuery(query);
         }
 
         // Usunięcie niepotrzebnych kolumn
@@ -232,22 +254,19 @@ public abstract class DatabaseContext
                         {
                             editColumnQuery = alterQuerryBuilder
                                 .BuildAlterTable(table.TableName)
-                                .BuildAlterColumn(columnToEdit, property.PropertyType.ToString(), property.AdditionalModificators[AdditionalModificator.VARCHAR_LEN])
+                                .BuildAlterColumn(columnToEdit, property.PropertyType.ToString(), databaseType,  property.AdditionalModificators[AdditionalModificator.VARCHAR_LEN])
                                 .GetQuery();
                         }
                         else
                         {
                             editColumnQuery = alterQuerryBuilder
                             .BuildAlterTable(table.TableName)
-                            .BuildAlterColumn(columnToEdit, property.PropertyType.ToString())
+                            .BuildAlterColumn(columnToEdit, property.PropertyType.ToString(), databaseType)
                             .GetQuery();
                         }
       
                         logger.LogInfo(editColumnQuery);
-                        if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(editColumnQuery) == 0)
-                        {
-                            return false;
-                        }
+                        _databaseConnection.CreateQueryExecutor().ExecuteNonQuery(editColumnQuery);
                    } 
                 }
                 
@@ -274,10 +293,7 @@ public abstract class DatabaseContext
                         }
 
                         logger.LogInfo(addColumnQuery);
-                        if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(addColumnQuery) == 0)
-                        {
-                            return false;
-                        }
+                        _databaseConnection.CreateQueryExecutor().ExecuteNonQuery(addColumnQuery);
                     }
                 }
 
@@ -291,10 +307,7 @@ public abstract class DatabaseContext
                             .GetQuery();
 
                         logger.LogInfo(dropColumnQuery);
-                        if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropColumnQuery) == 0)
-                        {
-                            return false;
-                        }
+                        _databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropColumnQuery);
                     }
                 }
             }
@@ -336,10 +349,7 @@ public abstract class DatabaseContext
                 logger.LogInfo($"New Query Alter: {query}");
 
                 // Wykonanie zapytania
-                if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(query) == 0)
-                {
-                    return false;
-                }
+                _databaseConnection.CreateQueryExecutor().ExecuteNonQuery(query);
             }
         }
 

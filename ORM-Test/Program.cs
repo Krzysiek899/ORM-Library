@@ -33,9 +33,9 @@ namespace ORMTest
                 string connectionString = "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=123m123m;";
 
                 var MySqlConnectionFactory = new MySqlConnectionFactory();
-                string connectionString_mySql = "";
+                string connectionString_mySql = "Host=localhost;Port=3306;Database=ORMTest;Username=root;Password=root";
                 
-                var companiesContext = new CompaniesContext(connectionString, postgreSqlConnectionFactory);
+                var companiesContext = new CompaniesContext(connectionString_mySql, MySqlConnectionFactory);
                 
                 var companiesTable = new Table<Company>(companiesContext.GetDatabaseConnection());
                 
@@ -47,10 +47,10 @@ namespace ORMTest
                 };
                 
                 companiesTable.Add(company);
-                companiesTable.Remove(company);
+                //companiesTable.Remove(company);
                 var company2 = new Company
                 {
-                    Company_id = 5,
+                    Company_id = 4,
                     Name = "Test5",  
                     Address = "Test5" 
                 };
@@ -64,8 +64,10 @@ namespace ORMTest
                                    
                 Console.WriteLine("\n");
                 var obj = companiesTable.First();
-                Console.WriteLine(obj.Company_id + " " + obj.Name + " " + obj.Address);
 
+                if(obj != null){
+                Console.WriteLine(obj.Company_id + " " + obj.Name + " " + obj.Address);
+                }
 
                 Console.WriteLine("\n");
                 var includeTest = companiesTable.Include(r => r.Name == "Test3").Include(r => r.Company_id == 3).ToList();

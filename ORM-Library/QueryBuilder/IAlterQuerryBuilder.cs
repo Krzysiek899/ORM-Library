@@ -5,7 +5,7 @@ namespace ORMLibrary.QueryBuilders
         IAlterBuilder BuildAlterTable(string tables);
         IAlterBuilder BuildAddColumn(string column, string type, string maxLength = "256");
         IAlterBuilder BuildDropColumn(string column);
-        IAlterBuilder BuildAlterColumn(string column, string type, string maxLength = "256");
+        IAlterBuilder BuildAlterColumn(string column, string type, string dbType, string maxLength = "256");
         IAlterBuilder BuildChangeColumn(string column, string newColumn, string type);
         IAlterBuilder BuildRenameTable(string table);
         IAlterBuilder BuildRenameColumn(string column, string newColumn);

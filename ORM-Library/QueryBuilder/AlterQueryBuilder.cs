@@ -25,13 +25,22 @@ namespace ORMLibrary.QueryBuilders
             return this;
         }
 
-        public IAlterBuilder BuildAlterColumn(string column, string type, string maxLength = "256") 
+        public IAlterBuilder BuildAlterColumn(string column, string type,  string dbType, string maxLength = "256") 
         {   
             if(type == "VARCHAR")
             {
                 type += "(" + maxLength + ")";
             }
-            _alterQuery += "ALTER COLUMN " + column + " TYPE " + type + " USING " + column + "::" + type + "\n";
+            
+
+            if (dbType.ToLower() == "postgresql")
+            {
+                _alterQuery += "ALTER COLUMN " + column + " TYPE " + type + " USING " + column + "::" + type + "\n";
+            }
+            else if (dbType.ToLower() == "mysql")
+            {
+                _alterQuery += "MODIFY COLUMN " + column + " " + type + "\n";
+            }
             return this;
         }
 

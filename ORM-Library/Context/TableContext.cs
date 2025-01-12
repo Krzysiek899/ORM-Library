@@ -75,6 +75,7 @@ namespace ORMLibrary.Context{
             var queryExecutor = _databaseConnection.CreateQueryExecutor();
             queryExecutor.ExecuteNonQuery(query);
             
+            LoadData();
             return true;
         }
 
@@ -123,17 +124,21 @@ namespace ORMLibrary.Context{
             var queryExecutor = _databaseConnection.CreateQueryExecutor();
             queryExecutor.ExecuteNonQuery(query);
 
+            LoadData();
+
             return true;
         }
 
         public List<T> ToList()
         {   
+            logger.LogInfo("ToList");
             data = data ?? new DataTable();
 
             var entityCollection = new EntityCollection();
             foreach(DataRow row in data.Rows)
             {
                 entityCollection.AddItem(row);
+                logger.LogInfo($"Row data: {string.Join(", ", row.ItemArray)}");
             }
             var entityIterator = new EntityIterator(entityCollection, false);
 
@@ -154,14 +159,21 @@ namespace ORMLibrary.Context{
                 }
                 list.Add(obj);
             }
+
+            LoadData();
+
             return list;
         }     
 
         public T? First()
         {
             var list = ToList();
+            if (list.Count == 0 || list == null)
+            {
+                return null;
+            }
             return list[0];
-        } 
+        }
 
 
         public bool Update<Y>(Y argument)
@@ -199,7 +211,7 @@ namespace ORMLibrary.Context{
             {
                 return false;
             }
-
+                            
             updateQueryBuilder.BuildUpdate(table).BuildSet(setClause).BuildWhere(whereClause);
             query = updateQueryBuilder.GetQuery();
 
@@ -208,6 +220,7 @@ namespace ORMLibrary.Context{
             var queryExecutor = _databaseConnection.CreateQueryExecutor();
             queryExecutor.ExecuteNonQuery(query);
 
+            LoadData();
             return true;
         }
 

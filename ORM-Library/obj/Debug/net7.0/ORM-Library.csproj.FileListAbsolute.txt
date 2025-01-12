@@ -10,16 +10,16 @@
 /Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/refint/ORM-Library.dll
 /Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.pdb
 /Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/Debug/net7.0/ref/ORM-Library.dll
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\bin\Debug\net7.0\ORM-Library.deps.json
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\bin\Debug\net7.0\ORM-Library.dll
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\bin\Debug\net7.0\ORM-Library.pdb
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\ORM-Library.csproj.AssemblyReference.cache
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\ORM-Library.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\ORM-Library.AssemblyInfoInputs.cache
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\ORM-Library.AssemblyInfo.cs
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\ORM-Library.csproj.CoreCompileInputs.cache
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\ORM-Library.sourcelink.json
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\ORM-Library.dll
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\refint\ORM-Library.dll
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\ORM-Library.pdb
-C:\Users\micha\VSC\Design Patterns 1\ORM-Library\ORM-Library\obj\Debug\net7.0\ref\ORM-Library.dll
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/bin/Debug/net7.0/ORM-Library.deps.json
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/bin/Debug/net7.0/ORM-Library.dll
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/bin/Debug/net7.0/ORM-Library.pdb
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.csproj.AssemblyReference.cache
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.GeneratedMSBuildEditorConfig.editorconfig
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.AssemblyInfoInputs.cache
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.AssemblyInfo.cs
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.csproj.CoreCompileInputs.cache
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.sourcelink.json
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.dll
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/refint/ORM-Library.dll
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/ORM-Library.pdb
+C:/Users/micha/VSC/Design Patterns 1/ORM-Library/ORM-Library/obj/Debug/net7.0/ref/ORM-Library.dll
