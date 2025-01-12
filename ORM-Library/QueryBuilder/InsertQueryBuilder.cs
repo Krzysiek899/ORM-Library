@@ -14,25 +14,19 @@ namespace ORMLibrary.QueryBuilders
             return this;
         }
 
-        public IInsertBuilder BuildValues(List<string> values)
+        public IInsertBuilder BuildValues(string values)
         {
-            string valuesString = "";
-            for(int i = 0; i < values.Count; i++)
-            {
-                if(values.Count == 1)
-                {
-                    valuesString += values[i] + "\n";
-                    break;
-                }
-                if(i == values.Count - 1)
-                {
-                    valuesString += values[i] + "\n";
-                    break;
-                }
-                valuesString += values[i] + ",\n"; 
-            }
-            _insertQuerry += "VALUES " + valuesString;
+            
+            // // Złączenie wartości z przecinkami, dodając przecinek po każdej wartości
+            // foreach (var value in values){
+            //     values[values.IndexOf(value)] = "'" + value + "'";
+            // }
+            // string valuesString = string.Join(", ", values);
+
+            // Składa finalne zapytanie
+            _insertQuerry += "VALUES (" + values + ")";
             return this;
+            
         }
 
         public string GetQuery(){

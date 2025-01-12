@@ -4,7 +4,7 @@ namespace ORMLibrary.QueryBuilders
     {
         IUpdateBuilder BuildUpdate(string tables);
         IUpdateBuilder BuildJoin(string tables);
-        IUpdateBuilder BuildSet(string column, string value);
+        IUpdateBuilder BuildSet(string setClause);
         IUpdateBuilder BuildWhere(string condition);
         IUpdateBuilder BuildOrderByASC(string columns);
         IUpdateBuilder BuildOrderByDESC(string columns);

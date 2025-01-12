@@ -5,6 +5,8 @@ using ORMLibrary.DataAccess.DatabaseConnectionFactories;
 using ORMLibrary.Logging;
 using System.Data;
 using System.Text;
+using MySql.Data.MySqlClient;
+using Npgsql;
 
 namespace ORMLibrary.Context{
 
@@ -37,11 +39,36 @@ public abstract class DatabaseContext
         return new Table<T>(_databaseConnection);
     }
 
+    private string DetectDatabaseType()
+{
+    var connection = _databaseConnection.GetConnection();
+    
+    if (connection is MySqlConnection)
+    {
+        return "MySQL";
+    }
+    else if (connection is NpgsqlConnection)
+    {
+        return "PostgreSQL";
+    }
+    
+    throw new InvalidOperationException("Unsupported database type");
+}
+
+
     private bool Map()
     {
 
-        string dropForeignKeysQuery = 
-            @"
+        string databaseType = DetectDatabaseType();
+        
+
+        string dropForeignKeysQuery = databaseType == "MySQL"
+        ? @"SET FOREIGN_KEY_CHECKS = 0;
+            SELECT CONCAT('ALTER TABLE ', table_name, ' DROP FOREIGN KEY ', constraint_name, ';') AS query
+            FROM information_schema.key_column_usage 
+            WHERE table_schema = DATABASE();
+            SET FOREIGN_KEY_CHECKS = 1;"
+        : @"
             DO $$
             DECLARE
                 r RECORD;
@@ -68,6 +95,9 @@ public abstract class DatabaseContext
             END $$;
             ";
 
+
+    
+
         if(_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropForeignKeysQuery) == 0)
         {
             logger.LogError("Bład przy usuwaniu kluczy", new Exception("Error while dripping foreign keys"));
@@ -79,9 +109,15 @@ public abstract class DatabaseContext
         // Automatyczne mapowanie bazy danych
         DatabaseMapping databaseMapping = _databaseMapper.AutoMap();
         // Pobranie listy istniejących tabel w bazie danych
+
+        string getTablesQuery = databaseType == "MySQL"
+        ? "SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE();"
+        : "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';";
+
+
          List<string> existingTables = _databaseConnection
             .CreateQueryExecutor()
-            .ExecuteQuery("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+            .ExecuteQuery(getTablesQuery)
             .AsEnumerable()
             .Select(row => row["table_name"].ToString())
             .Where(tableName => tableName != null)
@@ -150,31 +186,92 @@ public abstract class DatabaseContext
             var existingTable = existingTables.Find(t => t.Equals(table.TableName, StringComparison.OrdinalIgnoreCase));
             if (existingTable != null)
             {
+                 string getColumnsQuery = databaseType == "MySQL"
+                ? $"SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '{table.TableName}' AND table_schema = DATABASE();"
+                : $"SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '{table.TableName}' AND table_schema = 'public';";
+
                 var existingColumns = _databaseConnection
                     .CreateQueryExecutor()
-                    .ExecuteQuery($"SELECT column_name FROM information_schema.columns WHERE table_name = '{table.TableName}' AND table_schema = 'public'")
+                    .ExecuteQuery(getColumnsQuery)
                     .AsEnumerable()
-                    .Select(row => row["column_name"].ToString())
-                    .Where(columnName => columnName != null)
+                    .Select(row => (
+                        Name : row["column_name"].ToString(),
+                        Type : row["data_type"].ToString()
+                    ))
+                    .Where(column => column.Name != null && column.Type != null)
                     .ToList()!;
 
                 var columnsToRemove = existingColumns
+                    .Select(c => c.Name)
                     .Except(table.Properties.Select(p => p.PropertyName), StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
                 var columnsToAdd = table.Properties
                     .Select(p => p.PropertyName)
-                    .Except(existingColumns, StringComparer.OrdinalIgnoreCase)
+                    .Except(existingColumns.Select(c => c.Name), StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+    
+
+                var columnsToEdit = table.Properties
+                    .Where(p => existingColumns.Any(ec => 
+                        ec.Name.Equals(p.PropertyName, StringComparison.OrdinalIgnoreCase) &&
+                        !TypeTranslator.Translate(ec.Type, translationType: databaseType == "MySQL" ? "MySQLToModel" : "PostgreSQLToModel").ToString().Equals(p.PropertyType.ToString(), StringComparison.OrdinalIgnoreCase) 
+                    ))
+                    .Select(p => p.PropertyName)
                     .ToList();
 
+
+                foreach(string columnToEdit in columnsToEdit)
+                {
+                   if(!string.IsNullOrEmpty(columnToEdit))
+                   {
+                        var property = table.Properties.Find(p => p.PropertyName == columnToEdit);
+                        var alterQuerryBuilder = new AlterQuerryBuilder();
+                        string editColumnQuery;
+                        if(property.PropertyType.ToString() == "VARCHAR" && property.AdditionalModificators.ContainsKey(AdditionalModificator.VARCHAR_LEN))
+                        {
+                            editColumnQuery = alterQuerryBuilder
+                                .BuildAlterTable(table.TableName)
+                                .BuildAlterColumn(columnToEdit, property.PropertyType.ToString(), property.AdditionalModificators[AdditionalModificator.VARCHAR_LEN])
+                                .GetQuery();
+                        }
+                        else
+                        {
+                            editColumnQuery = alterQuerryBuilder
+                            .BuildAlterTable(table.TableName)
+                            .BuildAlterColumn(columnToEdit, property.PropertyType.ToString())
+                            .GetQuery();
+                        }
+      
+                        logger.LogInfo(editColumnQuery);
+                        if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(editColumnQuery) == 0)
+                        {
+                            return false;
+                        }
+                   } 
+                }
+                
                 foreach(string columnToAdd in columnsToAdd)
                 {
                     if (!string.IsNullOrEmpty(columnToAdd))
                     {
-                        string addColumnQuery = new AlterQuerryBuilder()
+                        var property = table.Properties.Find(p => p.PropertyName == columnToAdd);
+                        var alterQuerryBuilder = new AlterQuerryBuilder();
+                        string addColumnQuery;
+                        if(property.PropertyType.ToString() == "VARCHAR" && property.AdditionalModificators.ContainsKey(AdditionalModificator.VARCHAR_LEN))
+                        {
+                            addColumnQuery = new AlterQuerryBuilder()
+                            .BuildAlterTable(table.TableName)
+                            .BuildAddColumn(columnToAdd, table.Properties.Find(p => p.PropertyName == columnToAdd).PropertyType.ToString(), property.AdditionalModificators[AdditionalModificator.VARCHAR_LEN])
+                            .GetQuery();
+                        }
+                        else
+                        {
+                            addColumnQuery = new AlterQuerryBuilder()
                             .BuildAlterTable(table.TableName)
                             .BuildAddColumn(columnToAdd, table.Properties.Find(p => p.PropertyName == columnToAdd).PropertyType.ToString())
                             .GetQuery();
+                        }
 
                         logger.LogInfo(addColumnQuery);
                         if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(addColumnQuery) == 0)
@@ -202,6 +299,9 @@ public abstract class DatabaseContext
                 }
             }
         }
+
+        //edycja zmienionych kolumna
+
 
         // Tworzenie kluczy obcych
         foreach (TableMapping table in databaseMapping.Tables)

@@ -25,9 +25,13 @@ namespace ORMLibrary.QueryBuilders
             return this;
         }
 
-        public IAlterBuilder BuildModifyColumn(string column, string type)
-        {
-            _alterQuery += "MODIFY COLUMN " + column + " " + type + "\n";
+        public IAlterBuilder BuildAlterColumn(string column, string type, string maxLength = "256") 
+        {   
+            if(type == "VARCHAR")
+            {
+                type += "(" + maxLength + ")";
+            }
+            _alterQuery += "ALTER COLUMN " + column + " TYPE " + type + " USING " + column + "::" + type + "\n";
             return this;
         }
 

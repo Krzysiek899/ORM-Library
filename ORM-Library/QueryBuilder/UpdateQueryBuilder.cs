@@ -17,10 +17,10 @@ namespace ORMLibrary.QueryBuilders
             return this;
         }
 
-        public IUpdateBuilder BuildSet(string columns, string value)
+        public IUpdateBuilder BuildSet(string setClause)
         {
             // Build Set Query
-            _updateQuerry += "SET " + columns + " = " + value + "\n";
+            _updateQuerry += $"SET {setClause} ";
             return this;
         }
 
