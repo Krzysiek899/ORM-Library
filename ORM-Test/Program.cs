@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
-
 using ORMLibrary.QueryBuilders;
 using ORMLibrary.Context;
 using ORMLibrary.DataAccess;
@@ -9,74 +8,125 @@ using ORMLibrary.Iterator;
 using ORMLibrary.Mapping;
 using ORMTest.Domain;
 using ORMLibrary.DataAccess.DatabaseConnectionFactories;
-using System.Data;
+using System.Collections.Generic;
 namespace ORMTest
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-                Logger logger = Logger.GetInstance();
+            Logger logger = Logger.GetInstance();
 
-                // logger.LogInfo("Aplikacja uruchomiona");
-                // logger.LogWarning("To jest ostrzeżenie");
-                // try
-                // {
-                //     throw new InvalidOperationException("Wystąpił błąd w aplikacji");
-                // }
-                // catch (Exception ex)
-                // {
-                //     logger.LogError("Wystąpił błąd", ex);
-                // }
+            string mySqlConnectionString = "Host=localhost;Port=3306;Database=ORMTest;Username=root;Password=root";
+            var mySqlConnectionFactory = new MySqlConnectionFactory();
 
-                var postgreSqlConnectionFactory = new PostgreSqlConnectionFactory();
-                string connectionString = "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=123m123m;";
+            var companiesContext = new CompaniesContext(mySqlConnectionString, mySqlConnectionFactory);
+            var companiesTable = new Table<Company>(companiesContext.GetDatabaseConnection());
 
-                var MySqlConnectionFactory = new MySqlConnectionFactory();
-                string connectionString_mySql = "Host=localhost;Port=3306;Database=ORMTest;Username=root;Password=root";
-                
-                
-                var companiesContext = new CompaniesContext(connectionString_mySql, MySqlConnectionFactory);
-                
-                var companiesTable = new Table<Company>(companiesContext.GetDatabaseConnection());
-                
-                var company = new Company
-                {
-                    Company_id = 4,
-                    Name = "Test3",
-                    Address = "Test3" 
-                };
-                
-                companiesTable.Add(company);
-                //companiesTable.Remove(company);
-                var company2 = new Company
-                {
-                    Company_id = 4,
-                    Name = "Test5",  
-                    Address = "Test5" 
-                };
-                companiesTable.Update(company2);
+            try
+            {
+                logger.LogInfo("Starting ORM Tests...");
 
-                List<Company> list = companiesTable.ToList(); 
-                foreach(var element in list)
-                {
-                    Console.WriteLine(element.Company_id + " " + element.Name + " " + element.Address);
-                }
-                                   
-                Console.WriteLine("\n");
-                var obj = companiesTable.First();
+                TestAddOperation(companiesTable);
+                TestUpdateOperation(companiesTable);
+                TestIncludeOperation(companiesTable);
+                TestQueryingFirstElement(companiesTable);
+                TestRetrieveAll(companiesTable);
+                TestRemoveOperation(companiesTable);
 
-                if(obj != null){
-                Console.WriteLine(obj.Company_id + " " + obj.Name + " " + obj.Address);
-                }
 
-                Console.WriteLine("\n");
-                var includeTest = companiesTable.Include(r => r.Name == "Test3").Include(r => r.Company_id == 3).ToList();
+                logger.LogInfo("All tests completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("An error occurred during tests.", ex);
+            }
+        }
 
-                foreach(var element in includeTest)
-                {
-                    Console.WriteLine(element.Company_id + " " + element.Name + " " + element.Address);
-                }
+        private static void TestAddOperation(Table<Company> companiesTable)
+        {
+            Console.WriteLine("\n--- Testing Add Operation ---\n");
+
+            var newCompany = new Company
+            {
+                Company_id = 100,
+                Name = "NewCompany",
+                Address = "123 Test Street"
+            };
+
+            companiesTable.Add(newCompany);
+            Console.WriteLine($"Added: {newCompany.Company_id} {newCompany.Name} {newCompany.Address}");
+        }
+
+        private static void TestUpdateOperation(Table<Company> companiesTable)
+        {
+            Console.WriteLine("\n--- Testing Update Operation ---\n");
+
+            var updatedCompany = new Company
+            {
+                Company_id = 100, // Ensure this matches an existing ID
+                Name = "UpdatedCompany",
+                Address = "456 Updated Street"
+            };
+
+            companiesTable.Update(updatedCompany);
+            Console.WriteLine($"Updated: {updatedCompany.Company_id} {updatedCompany.Name} {updatedCompany.Address}");
+        }
+
+        private static void TestRemoveOperation(Table<Company> companiesTable)
+        {
+            Console.WriteLine("\n--- Testing Remove Operation ---\n");
+
+            var companyToRemove = new Company
+            {
+                Company_id = 100 // Ensure this matches an existing ID
+            };
+
+            companiesTable.Remove(companyToRemove);
+            Console.WriteLine($"Removed: {companyToRemove.Company_id}");
+        }
+
+        private static void TestIncludeOperation(Table<Company> companiesTable)
+        {
+            Console.WriteLine("\n--- Testing Include Operation ---\n");
+
+            var results = companiesTable
+                .Include(c => c.Name.Contains("Company"))
+                .Include(c => c.Address.Contains("Street"))
+                .ToList();
+
+            foreach (var company in results)
+            {
+                Console.WriteLine($"{company.Company_id} {company.Name} {company.Address}");
+            }
+        }
+
+        private static void TestQueryingFirstElement(Table<Company> companiesTable)
+        {
+            Console.WriteLine("\n--- Testing Querying First Element ---\n");
+
+            var firstCompany = companiesTable.First();
+
+            if (firstCompany != null)
+            {
+                Console.WriteLine($"First: {firstCompany.Company_id} {firstCompany.Name} {firstCompany.Address}");
+            }
+            else
+            {
+                Console.WriteLine("No companies found.");
+            }
+        }
+
+        private static void TestRetrieveAll(Table<Company> companiesTable)
+        {
+            Console.WriteLine("\n--- Testing Retrieve All Companies ---\n");
+
+            var companies = companiesTable.ToList();
+
+            foreach (var company in companies)
+            {
+                Console.WriteLine($"{company.Company_id} {company.Name} {company.Address}");
+            }
         }
     }
 }

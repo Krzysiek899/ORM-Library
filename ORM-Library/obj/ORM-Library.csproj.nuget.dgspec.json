@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\micha\\VSC\\Design Patterns 1\\ORM-Library-1\\ORM-Library\\ORM-Library.csproj": {}
+    "/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/ORM-Library.csproj": {}
   },
   "projects": {
-    "C:\\Users\\micha\\VSC\\Design Patterns 1\\ORM-Library-1\\ORM-Library\\ORM-Library.csproj": {
+    "/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/ORM-Library.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\micha\\VSC\\Design Patterns 1\\ORM-Library-1\\ORM-Library\\ORM-Library.csproj",
+        "projectUniqueName": "/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/ORM-Library.csproj",
         "projectName": "ORM-Library",
-        "projectPath": "C:\\Users\\micha\\VSC\\Design Patterns 1\\ORM-Library-1\\ORM-Library\\ORM-Library.csproj",
-        "packagesPath": "C:\\Users\\micha\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\micha\\VSC\\Design Patterns 1\\ORM-Library-1\\ORM-Library\\obj\\",
+        "projectPath": "/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/ORM-Library.csproj",
+        "packagesPath": "/Users/krzysztofczerenko/.nuget/packages/",
+        "outputPath": "/Users/krzysztofczerenko/Projects_5_semester/Design Pattern/ORM-Library/ORM-Library/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\micha\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/krzysztofczerenko/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net7.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net7.0": {
+            "targetAlias": "net7.0",
             "projectReferences": {}
           }
         },
@@ -32,17 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net7.0": {
+          "targetAlias": "net7.0",
           "dependencies": {
             "MySql.Data": {
               "target": "Package",
@@ -73,7 +67,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.406/RuntimeIdentifierGraph.json"
         }
       }
     }

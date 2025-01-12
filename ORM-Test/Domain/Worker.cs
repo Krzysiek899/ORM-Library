@@ -17,10 +17,12 @@ namespace ORMTest.Domain
         public DateTime DateOfBirth { get; set; }
         [MaxLength(12)]
         public string PhoneNumber { get; set; }
-        //public string Address { get; set; }
-        public int Age { get; set; }
+        public string Address { get; set; }
 
-        public int Salary {get; set;}
+        [MaxLength(10)]
+        public string Age { get; set; }
+
+        //public int Salary {get; set;}
 
     }
 }

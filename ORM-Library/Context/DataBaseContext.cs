@@ -56,7 +56,7 @@ public abstract class DatabaseContext
     }
 
 
-    private bool Map()
+    public bool Map()
     {
 
         string databaseType = DetectDatabaseType();

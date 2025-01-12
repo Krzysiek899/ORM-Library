@@ -131,14 +131,12 @@ namespace ORMLibrary.Context{
 
         public List<T> ToList()
         {   
-            logger.LogInfo("ToList");
             data = data ?? new DataTable();
 
             var entityCollection = new EntityCollection();
             foreach(DataRow row in data.Rows)
             {
                 entityCollection.AddItem(row);
-                logger.LogInfo($"Row data: {string.Join(", ", row.ItemArray)}");
             }
             var entityIterator = new EntityIterator(entityCollection, false);
 
