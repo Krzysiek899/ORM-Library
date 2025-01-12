@@ -176,7 +176,6 @@ public abstract class DatabaseContext
                             .BuildAddColumn(columnToAdd, table.Properties.Find(p => p.PropertyName == columnToAdd).PropertyType.ToString())
                             .GetQuery();
 
-                        logger.LogInfo($"Adding column: {columnToAdd} to table: {table.TableName}");
                         logger.LogInfo(addColumnQuery);
                         if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(addColumnQuery) == 0)
                         {
@@ -194,7 +193,6 @@ public abstract class DatabaseContext
                             .BuildDropColumn(columnToRemove)
                             .GetQuery();
 
-                        logger.LogInfo($"Dropping column: {columnToRemove} from table: {table.TableName}");
                         logger.LogInfo(dropColumnQuery);
                         if (_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropColumnQuery) == 0)
                         {

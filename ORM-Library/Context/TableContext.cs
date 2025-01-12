@@ -92,10 +92,6 @@ namespace ORMLibrary.Context{
             return true;
         }
 
-
-
-        
-        
         public List<T> ToList()
         {   
             var selectQuerryBuilder = new SelectQuerryBuilder();
