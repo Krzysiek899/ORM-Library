@@ -35,6 +35,7 @@ namespace ORMTest
                 var MySqlConnectionFactory = new MySqlConnectionFactory();
                 string connectionString_mySql = "Host=localhost;Port=3306;Database=ORMTest;Username=root;Password=root";
                 
+                
                 var companiesContext = new CompaniesContext(connectionString_mySql, MySqlConnectionFactory);
                 
                 var companiesTable = new Table<Company>(companiesContext.GetDatabaseConnection());

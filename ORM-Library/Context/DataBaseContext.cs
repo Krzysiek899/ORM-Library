@@ -61,94 +61,127 @@ public abstract class DatabaseContext
 
         string databaseType = DetectDatabaseType();
 
-        string queryX = @"
+        string foreignKeysQuery = databaseType == "MySQL" ? 
+        @"
             SELECT 
-                TABLE_NAME, 
-                CONSTRAINT_NAME, 
+                table_name, 
+                constraint_name 
             FROM 
                 information_schema.KEY_COLUMN_USAGE
             WHERE 
                 REFERENCED_TABLE_NAME IS NOT NULL 
                 AND TABLE_SCHEMA = DATABASE();
+        "
+        :
+        @"
+            SELECT 
+                kcu.table_name, 
+                tc.constraint_name
+            FROM 
+                information_schema.table_constraints AS tc
+            JOIN 
+                information_schema.key_column_usage AS kcu 
+                ON tc.constraint_name = kcu.constraint_name
+            WHERE 
+                tc.constraint_type = 'FOREIGN KEY'
+                AND tc.table_schema = 'public';
         ";
 
         
         var foreignKeys = _databaseConnection
             .CreateQueryExecutor()
-            .ExecuteQuery(queryX)
+            .ExecuteQuery(foreignKeysQuery)
             .AsEnumerable()
             .Select(row => (
-                Name : row["CONSTRAINT_NAME"].ToString(),
-                Column : row["COLUMN_NAME"].ToString()
+                Name : row["constraint_name"].ToString(),
+                Table : row["table_name"].ToString()
             ))
             .ToList()!;
         
         foreach (var foreignKey in foreignKeys)
         {
-            logger.LogInfo($"Foreign Key: {foreignKey.Name} {foreignKey.Column}");
+            logger.LogInfo($"Foreign Key: {foreignKey.Name} {foreignKey.Table}");
+            var alterQuerryBuilder = new AlterQuerryBuilder();
+            string dropQuery = "";
+            if(databaseType == "MySQL")
+            {
+                if(foreignKey.Table != null)
+                {
+                    dropQuery = alterQuerryBuilder.BuildAlterTable(foreignKey.Table).BuildDropForeignKey(foreignKey.Name).BuildFinal().GetQuery();
+                }
+
+            }
+            else
+            {
+                if(foreignKey.Table != null)
+                {
+                    dropQuery = alterQuerryBuilder.BuildAlterTable(foreignKey.Table).BuildDropConstraint(foreignKey.Name).BuildFinal().GetQuery();
+                }
+            }
+            _databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropQuery);
         }
 
 
-        string dropForeignKeysQuery = databaseType == "MySQL"
-        ? @"DELIMITER $$
-
-        CREATE PROCEDURE DropAllForeignKeys()
-        BEGIN
-            DECLARE done INT DEFAULT 0;
-            DECLARE table_name VARCHAR(255);
-            DECLARE constraint_name VARCHAR(255);
-            DECLARE cur CURSOR FOR 
-                SELECT table_name, constraint_name
-                FROM information_schema.key_column_usage 
-                WHERE table_schema = DATABASE();
+        // string dropForeignKeysQuery = databaseType == "MySQL"
+        // ? @"DELIMITER $$
+// 
+        // CREATE PROCEDURE DropAllForeignKeys()
+        // BEGIN
+        //     DECLARE done INT DEFAULT 0;
+        //     DECLARE table_name VARCHAR(255);
+        //     DECLARE constraint_name VARCHAR(255);
+        //     DECLARE cur CURSOR FOR 
+        //         SELECT table_name, constraint_name
+        //         FROM information_schema.key_column_usage 
+        //         WHERE table_schema = DATABASE();
             
-            DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+        //     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
             
-            OPEN cur;
+        //     OPEN cur;
             
-            read_loop: LOOP
-                FETCH cur INTO table_name, constraint_name;
-                IF done THEN
-                    LEAVE read_loop;
-                END IF;
+        //     read_loop: LOOP
+        //         FETCH cur INTO table_name, constraint_name;
+        //         IF done THEN
+        //             LEAVE read_loop;
+        //         END IF;
                 
-                SET @sql = CONCAT('ALTER TABLE ', table_name, ' DROP FOREIGN KEY ', constraint_name);
-                PREPARE stmt FROM @sql;
-                EXECUTE stmt;
-                DEALLOCATE PREPARE stmt;
-            END LOOP;
+        //         SET @sql = CONCAT('ALTER TABLE ', table_name, ' DROP FOREIGN KEY ', constraint_name);
+        //         PREPARE stmt FROM @sql;
+        //         EXECUTE stmt;
+        //         DEALLOCATE PREPARE stmt;
+        //     END LOOP;
             
-            CLOSE cur;
-        END$$
+        //     CLOSE cur;
+        // END$$
 
-        DELIMITER ;
-        "
-        : @"
-            DO $$
-            DECLARE
-                r RECORD;
-            BEGIN
-                -- Iteruj przez wszystkie klucze obce w schemacie public
-                FOR r IN 
-                    SELECT 
-                        tc.table_name, 
-                        kcu.constraint_name
-                    FROM 
-                        information_schema.table_constraints AS tc
-                        JOIN information_schema.key_column_usage AS kcu 
-                        ON tc.constraint_name = kcu.constraint_name
-                    WHERE 
-                        tc.constraint_type = 'FOREIGN KEY' 
-                        AND tc.table_schema = 'public'
-                LOOP
-                    -- Usuń każdy klucz obcy
-                    EXECUTE FORMAT(
-                        'ALTER TABLE %I DROP CONSTRAINT %I',
-                        r.table_name, r.constraint_name
-                    );
-                END LOOP;
-            END $$;
-            ";
+        // DELIMITER ;
+        // "
+        // : @"
+        //     DO $$
+        //     DECLARE
+        //         r RECORD;
+        //     BEGIN
+        //         -- Iteruj przez wszystkie klucze obce w schemacie public
+        //         FOR r IN 
+        //             SELECT 
+        //                 tc.table_name, 
+        //                 kcu.constraint_name
+        //             FROM 
+        //                 information_schema.table_constraints AS tc
+        //                 JOIN information_schema.key_column_usage AS kcu 
+        //                 ON tc.constraint_name = kcu.constraint_name
+        //             WHERE 
+        //                 tc.constraint_type = 'FOREIGN KEY' 
+        //                 AND tc.table_schema = 'public'
+        //         LOOP
+        //             -- Usuń każdy klucz obcy
+        //             EXECUTE FORMAT(
+        //                 'ALTER TABLE %I DROP CONSTRAINT %I',
+        //                 r.table_name, r.constraint_name
+        //             );
+        //         END LOOP;
+        //     END $$;
+        //     ";
         
 
         //_databaseConnection.CreateQueryExecutor().ExecuteNonQuery(dropForeignKeysQuery);

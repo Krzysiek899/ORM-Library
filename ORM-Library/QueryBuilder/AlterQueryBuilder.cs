@@ -88,7 +88,13 @@ namespace ORMLibrary.QueryBuilders
 
         public IAlterBuilder BuildDropConstraint(string key)
         {
-            _alterQuery += "DROP FOREIGN KEY " + key + "\n";
+            _alterQuery += "DROP CONSTRAINT " + key + "\n";
+            return this;
+        }
+
+        public IAlterBuilder BuildDropForeignKey(string keyName)
+        {
+            _alterQuery += "DROP FOREIGN KEY " + keyName + "\n";
             return this;
         }
 

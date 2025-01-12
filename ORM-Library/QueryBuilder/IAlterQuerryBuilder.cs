@@ -15,6 +15,7 @@ namespace ORMLibrary.QueryBuilders
         IAlterBuilder BuildReferences(string targetTable, string targetColumn);
 
         IAlterBuilder BuildDropConstraint(string key);
+        IAlterBuilder BuildDropForeignKey(string keyName);
 
         IAlterBuilder BuildFinal();
 
