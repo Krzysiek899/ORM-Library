@@ -22,6 +22,8 @@ namespace ORMTest.Domain
         [MaxLength(10)]
         public string Age { get; set; }
 
+        public int Salary {get; set;}
+
         //public int Salary {get; set;}
 
     }

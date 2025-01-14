@@ -20,7 +20,11 @@ namespace ORMTest
             string mySqlConnectionString = "Host=localhost;Port=3306;Database=ORMTest;Username=root;Password=root";
             var mySqlConnectionFactory = new MySqlConnectionFactory();
 
-            var companiesContext = new CompaniesContext(mySqlConnectionString, mySqlConnectionFactory);
+            string postgreSqlConnectionString = "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=b@zy4D@nych";
+            var postgreSqlConnectionFactory = new PostgreSqlConnectionFactory();
+
+            var companiesContext = new CompaniesContext(postgreSqlConnectionString,
+            postgreSqlConnectionFactory);
             var companiesTable = new Table<Company>(companiesContext.GetDatabaseConnection());
 
             try
@@ -47,14 +51,30 @@ namespace ORMTest
         {
             Console.WriteLine("\n--- Testing Add Operation ---\n");
 
-            var newCompany = new Company
-            {
-                Company_id = 100,
-                Name = "NewCompany",
-                Address = "123 Test Street"
-            };
+            var newCompany = companiesTable.Include(c => true).First();
 
-            companiesTable.Add(newCompany);
+            // var newCompany = new Company
+            // {
+            //     Company_id = 100,
+            //     Name = "NewCompany",
+            //     Address = "123 Test Street"
+            // };
+
+            // companiesTable.Add(newCompany);
+            
+            // newCompany.Name ="ABC";
+            // companiesTable.Update(newCompany);
+            //throw new Exception("Hold");
+
+            // var newCompany2 = new Company
+            // {
+            //     Company_id = 100,
+            //     Name = "NewCompany2",
+            //     Address = "1234 Test Street"
+            // };
+
+            // companiesTable.Add(newCompany2);
+
             Console.WriteLine($"Added: {newCompany.Company_id} {newCompany.Name} {newCompany.Address}");
         }
 
@@ -64,7 +84,7 @@ namespace ORMTest
 
             var updatedCompany = new Company
             {
-                Company_id = 100, // Ensure this matches an existing ID
+                Company_id = 101, // Ensure this matches an existing ID
                 Name = "UpdatedCompany",
                 Address = "456 Updated Street"
             };
